@@ -22,6 +22,20 @@ exports.addUserPromise = (id, nombre_usuario, correo, contrasena) => {
     });
 };
 
+//Función para crear una tabla especial para las tareas del usuario
+//No se ha implementado todavía
+function createTareasTable(id) {
+  const tableName = `tareasUsuario_${id}`; // Nombre de la tabla dinámica
+
+  return TareaUsuario.sync({ tableName: tableName })
+    .then(() => {
+      console.log(`Tabla de tareas creada con éxito para el usuario ${id}.`);
+    })
+    .catch((err) => {
+      console.log(err);
+      throw err; // Propaga el error para que pueda ser manejado en otro lugar
+    });
+}
 
 //Metodo para eliminar un usuario por ID
 exports.deleteUserById = (userId) => {
