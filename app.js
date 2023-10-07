@@ -3,7 +3,7 @@ const Usuario = require('./controllers/usuarioController');
 
 
 
-//Usuario.addUserPromise(0,'Kevin', 'kevinn_97@hotmail.com', 'contrasenia');
+Usuario.addUserPromise('Kevin', 'kevinn_97@hotmail.com', 'contrasenia');
 //Usuario.getUsers();
 //Usuario.getUserById(5);
 //Usuario.getUserByUsername('Daniel');
