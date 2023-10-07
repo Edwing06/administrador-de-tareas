@@ -4,22 +4,24 @@ const { Op } = require('sequelize');
 const EncriptadorService = require('../Services/encriptadorService');
  
 ///Metodo para agregar un usuario a la base de datos 
-exports.addUserPromise = async (id, nombre_usuario, correo, contrasena) => {
-  try {
-    const contraseñaEncriptada = await EncriptadorService.encriptarContraseña(contrasena);
-
-    const nuevoUsuario = await User.create({
-      id: id,
-      nombre_usuario: nombre_usuario,
-      correo: correo,
-      contrasena: contraseñaEncriptada, 
+exports.addUserPromise = (id, nombre_usuario, correo, contrasena) => {
+  return EncriptadorService.encriptarContraseña(contrasena)
+    .then(contraseñaEncriptada => {
+      return User.create({
+        id: id,
+        nombre_usuario: nombre_usuario,
+        correo: correo,
+        contrasena: contraseñaEncriptada, 
+      });
+    })
+    .then(nuevoUsuario => {
+      console.log(nuevoUsuario);
+    })
+    .catch(error => {
+      console.log(error);
     });
-    
-    console.log(nuevoUsuario);
-  } catch (error) {
-    console.log(error);
-  }
 };
+
 
 //Metodo para eliminar un usuario por ID
 exports.deleteUserById = (userId) => {
@@ -60,54 +62,33 @@ exports.deleteUserByEmail = (email) => {
  };
 
  //Método para actualizar el usuario
- exports.updateUser = async (userId, newName, newPassword) => {
-  try {
-    const contraseñaEncriptada = await EncriptadorService.encriptarContraseña(newPassword);
-    const [updatedRowCount] = await User.update(
-      { 
-        nombre_usuario: newName,
-        contrasena: contraseñaEncriptada 
-      },
-      {
-        where: {
-          id: userId
+ exports.updateUser = (userId, newName, newPassword) => {
+  return EncriptadorService.encriptarContraseña(newPassword)
+    .then(contraseñaEncriptada => {
+      return User.update(
+        {
+          nombre_usuario: newName,
+          contrasena: contraseñaEncriptada
+        },
+        {
+          where: {
+            id: userId
+          }
         }
+      );
+    })
+    .then(([updatedRowCount]) => {
+      if (updatedRowCount > 0) {
+        console.log(`Nombre de usuario y contraseña del usuario con ID - ${userId} actualizados correctamente.`);
+      } else {
+        console.log(`No se encontró ningún usuario con el ID ${userId}. No se realizó ninguna actualización.`);
       }
-    );
-
-    if (updatedRowCount > 0) {
-      console.log(`Nombre de usuario y contraseña del usuario con ID - ${userId} actualizados correctamente.`);
-    } else {
-      console.log(`No se encontró ningún usuario con el ID ${userId}. No se realizó ninguna actualización.`);
-    }
-  } catch (error) {
-    console.log(error);
-  }
+    })
+    .catch(error => {
+      console.log(error);
+    });
 };
 
-
-//Metodo para actualizar el correo electronico de un usuario proporcionando el ID y el nuevo correo
-exports.updateUserEmail = (userId, newEmail) => {
-   User.update(
-     { correo: newEmail },
-     {
-       where: {
-         id: userId
-       }
-     }
-   )
-   .then((updatedRowCount) => {
-     if (updatedRowCount > 0) {
-       console.log(`Correo electrónico del usuario con ID ${userId} actualizado correctamente.`);
-     } else {
-       console.log(`No se encontró ningún usuario con el ID ${userId}. No se realizó ninguna actualización.`);
-     }
-   })
-   .catch(err => {
-     console.log(err);
-   });
- };
-  
 
 // Metodo para obtener la lista de los usuarios en la base de datos
 exports.getUsers = () => {
@@ -129,6 +110,7 @@ exports.getUserById = (id) =>{
       console.log(err);
    })
 }
+
 // Metodo para obtener el usuario que coincida con el nombre de usuario dado de la base de datos
 exports.getUserByUsername = (nombre_usuario) => {
    User.findOne({
