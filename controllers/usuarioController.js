@@ -1,22 +1,25 @@
 const Sequelize = require('sequelize').Sequelize;
 const User = require('../models/usuario')
 const { Op } = require('sequelize');
+const EncriptadorService = require('../Services/encriptadorService');
  
 ///Metodo para agregar un usuario a la base de datos 
-exports.addUserPromise = (id,nombre_usuario,correo,contrasena) => {
-     User.create({
-        id: id,
-        nombre_usuario: nombre_usuario,
-        correo: correo,
-        contrasena: contrasena 
-     })
-     .then(result => {
-        console.log(result);
-     })
-     .catch(err => {
-        console.log(err);
-     })
-}
+exports.addUserPromise = async (id, nombre_usuario, correo, contrasena) => {
+  try {
+    const contraseñaEncriptada = await EncriptadorService.encriptarContraseña(contrasena);
+
+    const nuevoUsuario = await User.create({
+      id: id,
+      nombre_usuario: nombre_usuario,
+      correo: correo,
+      contrasena: contraseñaEncriptada, 
+    });
+    
+    console.log(nuevoUsuario);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 //Metodo para eliminar un usuario por ID
 exports.deleteUserById = (userId) => {
@@ -56,27 +59,32 @@ exports.deleteUserByEmail = (email) => {
    });
  };
 
-// Metodo para actualizar el nombre de usuario de un usuario proporcionando el ID y el nuevo nombre del usuario
-exports.updateUserName = (userId, newName) => {
-   User.update(
-     { nombre_usuario: newName },
-     {
-       where: {
-         id: userId
-       }
-     }
-   )
-   .then((updatedRowCount) => {
-     if (updatedRowCount > 0) {
-       console.log(`Nombre del usuario con ID - ${userId} actualizado correctamente.`);
-     } else {
-       console.log(`No se encontró ningún usuario con el ID ${userId}. No se realizó ninguna actualización.`);
-     }
-   })
-   .catch(err => {
-     console.log(err);
-   });
- };
+ //Método para actualizar el usuario
+ exports.updateUser = async (userId, newName, newPassword) => {
+  try {
+    const contraseñaEncriptada = await EncriptadorService.encriptarContraseña(newPassword);
+    const [updatedRowCount] = await User.update(
+      { 
+        nombre_usuario: newName,
+        contrasena: contraseñaEncriptada 
+      },
+      {
+        where: {
+          id: userId
+        }
+      }
+    );
+
+    if (updatedRowCount > 0) {
+      console.log(`Nombre de usuario y contraseña del usuario con ID - ${userId} actualizados correctamente.`);
+    } else {
+      console.log(`No se encontró ningún usuario con el ID ${userId}. No se realizó ninguna actualización.`);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 
 //Metodo para actualizar el correo electronico de un usuario proporcionando el ID y el nuevo correo
 exports.updateUserEmail = (userId, newEmail) => {
