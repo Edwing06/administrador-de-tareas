@@ -3,12 +3,12 @@ const User = require('../models/usuario')
 const { Op } = require('sequelize');
 const EncriptadorService = require('../Services/encriptadorService');
  
-///Metodo para agregar un usuario a la base de datos 
-exports.addUserPromise = (id, nombre_usuario, correo, contrasena) => {
+
+exports.addUserPromise = (nombre_usuario, correo, contrasena) => {
   return EncriptadorService.encriptarContraseña(contrasena)
     .then(contraseñaEncriptada => {
+      
       return User.create({
-        id: id,
         nombre_usuario: nombre_usuario,
         correo: correo,
         contrasena: contraseñaEncriptada, 
@@ -16,9 +16,20 @@ exports.addUserPromise = (id, nombre_usuario, correo, contrasena) => {
     })
     .then(nuevoUsuario => {
       console.log(nuevoUsuario);
+
+      // Una vez que el usuario se ha creado con éxito, obtener su ID
+      const userId = nuevoUsuario.id;
+
+      // Crear la tabla de tareas asociada al usuario
+      const tableName = `tareasUsuario_${userId}`;
+      return TareaUsuario.sync({ tableName: tableName })
+        .then(() => {
+          console.log(`Tabla de tareas creada con éxito para el usuario ${userId}.`);
+        });
     })
     .catch(error => {
       console.log(error);
+      throw error; // Propaga el error para que pueda ser manejado en otro lugar
     });
 };
 
