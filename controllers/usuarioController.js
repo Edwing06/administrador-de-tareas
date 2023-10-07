@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize').Sequelize;
 const User = require('../models/usuario')
+const TareasUsuario = require('../models/tareasUsuario'); 
 const { Op } = require('sequelize');
 const EncriptadorService = require('../Services/encriptadorService');
  
@@ -22,7 +23,7 @@ exports.addUserPromise = (nombre_usuario, correo, contrasena) => {
 
       // Crear la tabla de tareas asociada al usuario
       const tableName = `tareasUsuario_${userId}`;
-      return TareaUsuario.sync({ tableName: tableName })
+      return TareasUsuario.sync({ tableName: tableName })
         .then(() => {
           console.log(`Tabla de tareas creada con éxito para el usuario ${userId}.`);
         });
