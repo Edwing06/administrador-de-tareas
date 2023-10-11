@@ -1,31 +1,45 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../utils/database');
+const bcrypt = require('bcrypt');
 
-//User Model 
-
+// Se define el modelo de la entidad usuario
 const Usuario = sequelize.define('usuarios', {
-    //columna 1 (id)
     id: {
         type: Sequelize.INTEGER,
-        allownull: false, 
-        primaryKey: true
+        allowNull: false, 
+        primaryKey: true,
+        autoIncrement: true
     },
-    //Columna 2 (nombre de usuario)
     nombre_usuario: {
         type: Sequelize.STRING,
-        allownull: false
+        allowNull: false, 
+        comment: 'Nombre de usuario único'
     },
-    //Columna 3 (correo)
     correo: {
         type: Sequelize.STRING,
-        allownull: false
+        allowNull: false,
+        unique: true, // Asegura que el correo electrónico sea único
+        validate: {
+            isEmail: true, 
+        },
+        comment: 'Correo electrónico del usuario'
     },
-    //Columna 4 (contrasena)
     contrasena: {
         type: Sequelize.STRING,
-        allownull: false,
+        allowNull: false,
+        comment: 'Contraseña almacenada con hash'
     }
+}, {
+    hooks: {
+        beforeCreate: (usuario) => {
+            // Hash de la contraseña antes de guardarla en la base de datos
+            const saltRounds = 10; // Número de rondas de sal
+            return bcrypt.hash(usuario.contrasena, saltRounds)
+                .then((hash) => {
+                    usuario.contrasena = hash;
+                });
+        }
+    }
+});
 
-})
-
-module.exports = Usuario; 
+module.exports = Usuario;

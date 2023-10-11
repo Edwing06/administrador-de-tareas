@@ -1,7 +1,9 @@
-const Sequelize = require('./utils/database')
-const Usuario = require('./controllers/usuarioController');
+const ExpressApp = require('./expressApp'); // Importa la clase ExpressApp definida en expressApp.js
 
+const app = new ExpressApp();
+const port = process.env.PORT || 3000; // Define el puerto en el que deseas que tu aplicación se ejecute
 
+<<<<<<< Updated upstream
 
 //Usuario.addUserPromise(0,'Kevin', 'kevinn_97@hotmail.com', 'contrasenia');
 //Usuario.getUsers();
@@ -13,3 +15,6 @@ const Usuario = require('./controllers/usuarioController');
 //Usuario.deleteUserByEmail('contrasenia');
 //Usuario.updateUserName(1, 'Pruebitita');
 //Usuario.updateUserEmail(1, 'Pruebita@gmail.com');
+=======
+app.start(port); // Inicia el servidor Express
+>>>>>>> Stashed changes
