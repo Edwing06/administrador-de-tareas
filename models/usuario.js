@@ -6,13 +6,13 @@ const bcrypt = require('bcrypt');
 const Usuario = sequelize.define('usuarios', {
     id: {
         type: Sequelize.INTEGER,
-        allowNull: false, 
+        allowNull: false,
         primaryKey: true,
         autoIncrement: true
     },
     nombre_usuario: {
         type: Sequelize.STRING,
-        allowNull: false, 
+        allowNull: false,
         comment: 'Nombre de usuario único'
     },
     correo: {
@@ -20,7 +20,7 @@ const Usuario = sequelize.define('usuarios', {
         allowNull: false,
         unique: true, // Asegura que el correo electrónico sea único
         validate: {
-            isEmail: true, 
+            isEmail: true,
         },
         comment: 'Correo electrónico del usuario'
     },
@@ -29,6 +29,8 @@ const Usuario = sequelize.define('usuarios', {
         allowNull: false,
         comment: 'Contraseña almacenada con hash'
     }
+}, {
+    timestamps: false,
 }, {
     hooks: {
         beforeCreate: (usuario) => {
