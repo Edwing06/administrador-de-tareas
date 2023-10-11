@@ -1,4 +1,6 @@
 const Usuario = require('../models/usuario'); // Importa el modelo de usuario
+const bcrypt = require('bcrypt');
+
 
 // Controlador para obtener todos los usuarios
 exports.getUsuarios = async (req, res) => {
@@ -53,7 +55,11 @@ exports.actualizarUsuario = async (req, res) => {
 
     usuario.nombre_usuario = nombre_usuario;
     usuario.correo = correo;
-    usuario.contrasena = contrasena;
+    
+    //Encriptación de la contraseña actualizada
+    const saltRounds = 10; 
+    const hashedPassword = await bcrypt.hash(contrasena, saltRounds);
+    usuario.contrasena = hashedPassword;
 
     await usuario.save();
 
