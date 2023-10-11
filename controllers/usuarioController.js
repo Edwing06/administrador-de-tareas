@@ -13,10 +13,10 @@ exports.getUsuarios = async (req, res) => {
 
 // Controlador para crear un nuevo usuario
 exports.crearUsuario = async (req, res) => {
-  const { nombre_usuario, correo, password } = req.body;
+  const { nombre_usuario, correo, contrasena } = req.body;
 
   try {
-    const nuevoUsuario = await Usuario.create({ nombre_usuario, correo, password });
+    const nuevoUsuario = await Usuario.create({ nombre_usuario, correo, contrasena });
     res.status(201).json(nuevoUsuario);
   } catch (error) {
     console.error('Error al crear usuario:', error);
@@ -43,7 +43,7 @@ exports.getUsuarioPorId = async (req, res) => {
 // Controlador para actualizar un usuario por su ID
 exports.actualizarUsuario = async (req, res) => {
   const { id } = req.params;
-  const { nombre_usuario, correo, password } = req.body;
+  const { nombre_usuario, correo, contrasena } = req.body;
 
   try {
     const usuario = await Usuario.findByPk(id);
@@ -53,7 +53,7 @@ exports.actualizarUsuario = async (req, res) => {
 
     usuario.nombre_usuario = nombre_usuario;
     usuario.correo = correo;
-    usuario.password = password;
+    usuario.contrasena = contrasena;
 
     await usuario.save();
 

@@ -31,7 +31,6 @@ const Usuario = sequelize.define('usuarios', {
     }
 }, {
     timestamps: false,
-}, {
     hooks: {
         beforeCreate: (usuario) => {
             // Hash de la contraseña antes de guardarla en la base de datos
