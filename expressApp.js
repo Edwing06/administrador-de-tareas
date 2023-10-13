@@ -15,7 +15,7 @@ class ExpressApp {
   }
 
   setupRoutes() {
-    this.app.use('/api', routes); // Monta tus rutas en '/api' (puedes personalizar el prefijo)
+    this.app.use('/api', routes);
   }
 
   start(port) {
