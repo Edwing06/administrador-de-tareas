@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 
 // Controlador para obtener todos los usuarios
-exports.getUsuarios = async (req, res) => {
+exports.listar = async (req, res) => {
   try {
     const usuarios = await Usuario.findAll();
     res.json(usuarios);
@@ -14,7 +14,7 @@ exports.getUsuarios = async (req, res) => {
 };
 
 // Controlador para crear un nuevo usuario
-exports.crearUsuario = async (req, res) => {
+exports.crear = async (req, res) => {
   const { nombre_usuario, correo, contrasena } = req.body;
 
   try {
@@ -27,7 +27,7 @@ exports.crearUsuario = async (req, res) => {
 };
 
 // Controlador para obtener un usuario por su ID
-exports.getUsuarioPorId = async (req, res) => {
+exports.obtenerPorId = async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -43,7 +43,7 @@ exports.getUsuarioPorId = async (req, res) => {
 };
 
 // Controlador para actualizar un usuario por su ID
-exports.actualizarUsuario = async (req, res) => {
+exports.actualizarPorId = async (req, res) => {
   const { id } = req.params;
   const { nombre_usuario, correo, contrasena } = req.body;
 
@@ -55,9 +55,9 @@ exports.actualizarUsuario = async (req, res) => {
 
     usuario.nombre_usuario = nombre_usuario;
     usuario.correo = correo;
-    
+
     //Encriptación de la contraseña actualizada
-    const saltRounds = 10; 
+    const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(contrasena, saltRounds);
     usuario.contrasena = hashedPassword;
 
@@ -71,7 +71,7 @@ exports.actualizarUsuario = async (req, res) => {
 };
 
 // Controlador para eliminar un usuario por su ID
-exports.eliminarUsuario = async (req, res) => {
+exports.eliminarPorId = async (req, res) => {
   const { id } = req.params;
 
   try {

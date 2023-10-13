@@ -39,4 +39,4 @@ const TareasUsuario = sequelize.define('tareas', {
 
 })
 
-module.exports = TareasUsuario;
+module.exports = Tarea;
