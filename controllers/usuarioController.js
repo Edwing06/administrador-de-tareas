@@ -1,169 +1,89 @@
-const Sequelize = require('sequelize').Sequelize;
-const User = require('../models/usuario')
-const { Op } = require('sequelize');
- 
-///Metodo para agregar un usuario a la base de datos 
-exports.addUserPromise = (id,nombre_usuario,correo,contrasena) => {
-     User.create({
-        id: id,
-        nombre_usuario: nombre_usuario,
-        correo: correo,
-        contrasena: contrasena 
-     })
-     .then(result => {
-        console.log(result);
-     })
-     .catch(err => {
-        console.log(err);
-     })
-}
+const Usuario = require('../models/usuario'); // Importa el modelo de usuario
+const bcrypt = require('bcrypt');
 
-//Metodo para eliminar un usuario por ID
-exports.deleteUserById = (userId) => {
-   User.destroy({
-     where: {
-       id: userId
-     }
-   })
-   .then((deletedRowCount) => {
-     if (deletedRowCount > 0) {
-       console.log(`Usuario con ID ${userId} eliminado correctamente.`);
-     } else {
-       console.log(`No se encontró ningún usuario con ID - ${userId}. No se realizó ninguna eliminación.`);
-     }
-   })
-   .catch(err => {
-     console.log(err);
-   });
- };
+// Controlador para obtener todos los usuarios
+exports.listar = async (req, res) => {
+  try {
+    const usuarios = await Usuario.findAll(); // Obtiene todos los usuarios de la base de datos
+    res.json(usuarios); // Responde con los usuarios en formato JSON
+  } catch (error) {
+    console.error('Error al obtener usuarios:', error);
+    res.status(500).json({ error: 'Error interno del servidor' }); // Maneja y responde con un error 500 en caso de problemas
+  }
+};
 
-//Metodo para eliminar un usuario por correo
-exports.deleteUserByEmail = (email) => {
-   User.destroy({
-     where: {
-       correo: email
-     }
-   })
-   .then((deletedRowCount) => {
-     if (deletedRowCount > 0) {
-       console.log(`Usuario con correo electrónico - ${email} - eliminado correctamente.`);
-     } else {
-       console.log(`No se encontró ningún usuario con el correo electrónico - ${email}. No se realizó ninguna eliminación.`);
-     }
-   })
-   .catch(err => {
-     console.log(err);
-   });
- };
+// Controlador para crear un nuevo usuario
+exports.crear = async (req, res) => {
+  const { nombre_usuario, correo, contrasena } = req.body;
 
-// Metodo para actualizar el nombre de usuario de un usuario proporcionando el ID y el nuevo nombre del usuario
-exports.updateUserName = (userId, newName) => {
-   User.update(
-     { nombre_usuario: newName },
-     {
-       where: {
-         id: userId
-       }
-     }
-   )
-   .then((updatedRowCount) => {
-     if (updatedRowCount > 0) {
-       console.log(`Nombre del usuario con ID - ${userId} actualizado correctamente.`);
-     } else {
-       console.log(`No se encontró ningún usuario con el ID ${userId}. No se realizó ninguna actualización.`);
-     }
-   })
-   .catch(err => {
-     console.log(err);
-   });
- };
+  try {
+    const nuevoUsuario = await Usuario.create({ nombre_usuario, correo, contrasena }); // Crea un nuevo usuario en la base de datos
+    res.status(201).json(nuevoUsuario); // Responde con el nuevo usuario creado y un estado 201 (Creado)
+  } catch (error) {
+    console.error('Error al crear usuario:', error);
+    res.status(500).json({ error: 'Error interno del servidor' }); // Maneja y responde con un error 500 en caso de problemas
+  }
+};
 
-//Metodo para actualizar el correo electronico de un usuario proporcionando el ID y el nuevo correo
-exports.updateUserEmail = (userId, newEmail) => {
-   User.update(
-     { correo: newEmail },
-     {
-       where: {
-         id: userId
-       }
-     }
-   )
-   .then((updatedRowCount) => {
-     if (updatedRowCount > 0) {
-       console.log(`Correo electrónico del usuario con ID ${userId} actualizado correctamente.`);
-     } else {
-       console.log(`No se encontró ningún usuario con el ID ${userId}. No se realizó ninguna actualización.`);
-     }
-   })
-   .catch(err => {
-     console.log(err);
-   });
- };
-  
+// Controlador para obtener un usuario por su ID
+exports.obtenerPorId = async (req, res) => {
+  const { id } = req.params;
 
-// Metodo para obtener la lista de los usuarios en la base de datos
-exports.getUsers = () => {
-   User.findAll()
-   .then((result) => {
-      console.log(JSON.stringify(result, null, 2))
-   })
-   .catch(err => {
-      console.log(err);
-   })
-}
-// Metodo para obtener el usuario que coincida con el ID dado de la base de datos
-exports.getUserById = (id) =>{
-   User.findByPk(id)
-   .then((result) =>{
-      console.log(JSON.stringify(result, null, 2))
-   })
-   .catch(err => {
-      console.log(err);
-   })
-}
-// Metodo para obtener el usuario que coincida con el nombre de usuario dado de la base de datos
-exports.getUserByUsername = (nombre_usuario) => {
-   User.findOne({
-     where: {
-       nombre_usuario: nombre_usuario
-     }
-   })
-   .then((result) => {
-     console.log(JSON.stringify(result, null, 2));
-   })
-   .catch(err => {
-     console.log(err);
-   });
- }
+  try {
+    const usuario = await Usuario.findByPk(id); // Busca un usuario por su ID
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado' }); // Responde con un error 404 si el usuario no se encuentra
+    }
+    res.json(usuario); // Responde con los detalles del usuario en formato JSON
+  } catch (error) {
+    console.error('Error al obtener usuario por ID:', error);
+    res.status(500).json({ error: 'Error interno del servidor' }); // Maneja y responde con un error 500 en caso de problemas
+  }
+};
 
- // Metodo para obtener el usuario que coincida con el correo dado de la base de datos
- exports.getUserByEmail = (correo) => {
-   User.findOne({
-     where: {
-       correo: correo
-     }
-   })
-   .then((result) => {
-     console.log(JSON.stringify(result, null, 2));
-   })
-   .catch(err => {
-     console.log(err);
-   });
- }
+// Controlador para actualizar un usuario por su ID
+exports.actualizarPorId = async (req, res) => {
+  const { id } = req.params;
+  const { nombre_usuario, correo, contrasena } = req.body;
 
-// Metodo para obtener la lista de usuarios creados dentro del periodo dado
- exports.getUsersBetweenDates = (startDate, endDate) => {
-   User.findAll({
-     where: {
-       createdAt: {
-         [Op.between]: [startDate, endDate]
-       }
-     }
-   })
-   .then((results) => {
-     console.log(JSON.stringify(results, null, 2));
-   })
-   .catch(err => {
-     console.log(err);
-   });
- };
+  try {
+    const usuario = await Usuario.findByPk(id); // Busca un usuario por su ID
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado' }); // Responde con un error 404 si el usuario no se encuentra
+    }
+
+    usuario.nombre_usuario = nombre_usuario;
+    usuario.correo = correo;
+
+    // Encriptación de la contraseña actualizada
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(contrasena, saltRounds);
+    usuario.contrasena = hashedPassword;
+
+    await usuario.save(); // Guarda los cambios en el usuario
+
+    res.json(usuario); // Responde con los detalles del usuario actualizado en formato JSON
+  } catch (error) {
+    console.error('Error al actualizar usuario:', error);
+    res.status(500).json({ error: 'Error interno del servidor' }); // Maneja y responde con un error 500 en caso de problemas
+  }
+};
+
+// Controlador para eliminar un usuario por su ID
+exports.eliminarPorId = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const usuario = await Usuario.findByPk(id); // Busca un usuario por su ID
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado' }); // Responde con un error 404 si el usuario no se encuentra
+    }
+
+    await usuario.destroy(); // Elimina el usuario de la base de datos
+
+    res.json({ mensaje: 'Usuario eliminado con éxito' }); // Responde con un mensaje de éxito en formato JSON
+  } catch (error) {
+    console.error('Error al eliminar usuario:', error);
+    res.status(500).json({ error: 'Error interno del servidor' }); // Maneja y responde con un error 500 en caso de problemas
+  }
+};
