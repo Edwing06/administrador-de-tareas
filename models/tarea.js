@@ -10,12 +10,6 @@ const TareasUsuario = sequelize.define('tareas', {
         allownull: false, 
         primaryKey: true
     },
-    //Columna 2 (id del usuario)
-    id_usuario: {
-        type: Sequelize.INTEGER,
-        allownull: false,
-        primaryKey: true
-    },
     //Columna 3 (nombre de la tarea)
     nombre: {
         type: Sequelize.STRING,
