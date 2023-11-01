@@ -1,5 +1,8 @@
 const Usuario = require('../models/usuario'); // Importa el modelo de usuario
 const bcrypt = require('bcrypt');
+const Tarea = require('../models/tarea');
+const Sequelize = require('sequelize');
+const sequelize = require('../utils/database');
 
 // Controlador para obtener todos los usuarios
 exports.listar = async (req, res) => {
@@ -18,6 +21,43 @@ exports.crear = async (req, res) => {
 
   try {
     const nuevoUsuario = await Usuario.create({ nombre_usuario, correo, contrasena }); // Crea un nuevo usuario en la base de datos
+
+    //Generamos el nombre de la tabla. Se usan esas comillas para que lo que se encuentra dentro de las llaves sea tomado como una variable y no como un texto.
+    const nombreTablaDeTareas = `tareasUsuario_${nuevoUsuario.id}`;
+
+    const TareasUsuario = Tarea.init(
+      {
+        id_tarea: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          primaryKey: true,
+        },
+        nombre: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
+        descripcion: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
+        fecha_entrega: {
+          type: Sequelize.TIME,
+          allowNull: false,
+        },
+        entregada: {
+          type: Sequelize.BOOLEAN,
+          allowNull: false,
+        },
+      },{
+        timestamps: false,
+        sequelize, // Debes pasar la instancia de Sequelize
+        tableName: nombreTablaDeTareas, // Establece el nombre de la tabla dinámica
+      }
+    );
+
+    // Sincroniza el modelo con la base de datos para crear la tabla
+    await TareasUsuario.sync();
+
     res.status(201).json(nuevoUsuario); // Responde con el nuevo usuario creado y un estado 201 (Creado)
   } catch (error) {
     console.error('Error al crear usuario:', error);
