@@ -1,5 +1,6 @@
-const Tarea = require('../models/tarea'); // Importa el modelo de la tarea
 
+const CustomError = require('./Services/CustomError'); // Reemplaza la ruta por la ubicación real de tu clase CustomError
+const Tarea = require('../models/tarea'); // Reemplaza la ruta por la ubicación real de tu modelo Tarea
 
 // Controlador para obtener todas las tareas
 exports.listar = async (req, res) => {
@@ -8,7 +9,8 @@ exports.listar = async (req, res) => {
     res.json(tareas);
   } catch (error) {
     console.error('Error al obtener las tareas:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
+    const customError = new CustomError('Error al obtener las tareas', 500);
+    res.status(customError.statusCode).json({ error: customError.message });
   }
 };
 
@@ -21,7 +23,8 @@ exports.crear = async (req, res) => {
     res.status(201).json(nuevaTarea);
   } catch (error) {
     console.error('Error al crear la tarea:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
+    const customError = new CustomError('Error al crear la tarea', 500);
+    res.status(customError.statusCode).json({ error: customError.message });
   }
 };
 
@@ -32,12 +35,14 @@ exports.obtenerPorId = async (req, res) => {
   try {
     const tarea = await Tarea.findByPk(id);
     if (!tarea) {
-      return res.status(404).json({ error: 'Tarea no encontrada' });
+      const customError = new CustomError('Tarea no encontrada', 404);
+      return res.status(customError.statusCode).json({ error: customError.message });
     }
     res.json(tarea);
   } catch (error) {
     console.error('Error al obtener la tarea por ID:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
+    const customError = new CustomError('Error al obtener la tarea por ID', 500);
+    res.status(customError.statusCode).json({ error: customError.message });
   }
 };
 
@@ -49,7 +54,8 @@ exports.actualizarPorId = async (req, res) => {
   try {
     const tarea = await Tarea.findByPk(id);
     if (!tarea) {
-      return res.status(404).json({ error: 'Tarea no encontrada' });
+      const customError = new CustomError('Tarea no encontrada', 404);
+      return res.status(customError.statusCode).json({ error: customError.message });
     }
 
     tarea.nombre = nombre;
@@ -62,7 +68,8 @@ exports.actualizarPorId = async (req, res) => {
     res.json(tarea);
   } catch (error) {
     console.error('Error al actualizar la tarea:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
+    const customError = new CustomError('Error al actualizar la tarea', 500);
+    res.status(customError.statusCode).json({ error: customError.message });
   }
 };
 
@@ -73,14 +80,16 @@ exports.eliminarPorId = async (req, res) => {
   try {
     const tarea = await Tarea.findByPk(id);
     if (!tarea) {
-      return res.status(404).json({ error: 'Tarea no encontrada' });
+      const customError = new CustomError('Tarea no encontrada', 404);
+      return res.status(customError.statusCode).json({ error: customError.message });
     }
 
-    await usuario.destroy();
+    await tarea.destroy();
 
     res.json({ mensaje: 'Tarea eliminada con éxito' });
   } catch (error) {
     console.error('Error al eliminar la tarea:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
+    const customError = new CustomError('Error al eliminar la tarea', 500);
+    res.status(customError.statusCode).json({ error: customError.message });
   }
 };
