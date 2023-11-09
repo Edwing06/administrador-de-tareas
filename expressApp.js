@@ -1,6 +1,7 @@
 const express = require('express'); // Importa la biblioteca Express
 const bodyParser = require('body-parser'); // Middleware para analizar solicitudes
-const routesUsuarios = require('./routes/routesUsuario'); // Importa las rutas definidas
+const routesUsuarios = require('./routes/routesUsuario'); // Importa las rutas definidas para usuarios
+const routesTareas = require('./routes/routesTareas'); //Importa las rutas definidas para tareas
 
 class ExpressApp {
   constructor() {
@@ -15,7 +16,8 @@ class ExpressApp {
   }
 
   setupRoutes() {
-    this.app.use('/usuarios', routesUsuarios); // Agrega las rutas a la aplicación en el prefijo '/api'
+    this.app.use('/usuarios', routesUsuarios); // Agrega las rutas a la aplicación en el prefijo '/usuarios'
+    this.app.use('/tareas', routesTareas); //Agrega las rutas a la aplicacion en el prefijo '/tareas'
   }
 
   start(port) {
