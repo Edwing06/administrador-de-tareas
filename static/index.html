@@ -6,47 +6,51 @@
     <title>Administrador de tareas WEB</title>
 </head>
 <body>
-    <div>
-        <div>
-            <strong>Administrador de tareas Web</strong>
+    <div class="kanban-heading">
+        <strong class="kanban-heading-text">Administrador de tareas Web</strong>
+    </div>
+    <div class="kanban-board">
+      <div class="kanban-block" id="menu" ondrop="drop(event)" ondragover="allowDrop(event)">
+
+        
+        
+    </div>
+        <div class="kanban-block" id="todo" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <strong>Hacer</strong>
+            <div class="task-button-block">
+                <button id="task-button" onclick="createTask()">Crear nueva tarea</span>
+            </div>
+            
         </div>
-        <div>
-            <div>
-                <strong>Hacer</strong>
-                <div>
-                    <button>Crear nueva tarea</span>
-                </div>
-                
-            </div>
-            <div>
-                <strong>En progreso</strong>
-            </div>
-            <div>
-                <strong>Hecho</strong>
-            </div>
-            <div>
-                <strong>Nueva Tarea</strong>
-                <span>
-                    <label>Tarea</label>
-                    <input>
-                </span>
-                <span>
-                    <label>Descripcion</label>
-                    <textarea></textarea>
-                </span>
-                <span>
-                    <label>Estado</label>
-                    <select>
-                        <option>Hacer</option>
-                    </select>
-                </span>
-                <span>
-                    <button>Edit</span>
-                    <button>Guardar</span>
-                    <button>Cancelar</span>
-                </span>
-            </div>
+        <div class="kanban-block" id="inprogress" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <strong>En progreso</strong>
+        </div>
+        <div class="kanban-block" id="done" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <strong>Hecho</strong>
+        </div>
+        <div class="create-new-task-block" id="create-new-task-block">
+            <strong>Nueva Tarea</strong>
+            <span class="form-row">
+                <label class="form-row-label" for="task-name" id="nombreTarea">Tarea</label>
+                <input class="form-row-input" type="text" name="task-name" id="task-name">
+            </span>
+            <span class="form-row">
+                <label class="form-row-label" for="task-name">Descripcion</label>
+                <textarea class="form-row-input" name="task-description" id="task-description" cols="70" rows="10"></textarea>
+            </span>
+            <span class="form-row">
+                <label class="form-row-label" for="task-name">Estado</label>
+                <select class="form-row-input" name="task-status" id="task-status">
+                    <option value="Hacer">Hacer</option>
+                </select>
+            </span>
+            <span class="form-row-buttons">
+                <button id="edit-button" onclick="editTask()">Edit</span>
+                <button id="save-button" onclick="saveTask()">Guardar</span>
+                <button id="cancel-button" onclick="createTask()">Cancelar</span>
+            </span>
         </div>
     </div>
+</div>
 </body>
 </html>
