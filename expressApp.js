@@ -18,6 +18,8 @@ class ExpressApp {
   setupRoutes() {
     this.app.use('/usuarios', routesUsuarios); // Agrega las rutas a la aplicación en el prefijo '/usuarios'
     this.app.use('/tareas', routesTareas); //Agrega las rutas a la aplicacion en el prefijo '/tareas'
+    this.app.use('/', routesUsuarios);
+    this.app.use('/auth', routesUsuarios);
   }
 
   start(port) {
