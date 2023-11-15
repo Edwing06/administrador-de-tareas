@@ -52,6 +52,16 @@ router.get('/index', (req, res) => {
     res.sendFile(loginFilePath);
   });
 
+  router.get('/styles/index.css', (req, res) => {
+    const cssFilePath = path.join(__dirname, '../static/styles/index.css');
+    res.sendFile(cssFilePath);
+});
+
+router.get('/index.js', (req, res) => {
+  const cssFilePath = path.join(__dirname, '../static/index.js');
+  res.sendFile(cssFilePath);
+});
+
 
 
 router.get('/usuarios', usuarioController.listar);
