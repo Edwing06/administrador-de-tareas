@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/index.css">
+    <script defer src="index.js"></script>
+    <title>Administrador de tareas WEB</title>
+</head>
+
+<body>
+    <div class="kanban-heading">
+        <strong class="kanban-heading-text">Administrador de tareas WEB</strong>
+    </div>
+    <div class="kanban-board">
+      <div class="kanban-block" id="menu" ondrop="drop(event)" ondragover="allowDrop(event)">
+    </div>
+        <div class="kanban-block" id="todo" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <strong>Hacer</strong>
+            <div class="task-button-block">
+                <button id="task-button" onclick="createTask()">Crear nueva tarea</span>
+            </div>
+            
+        </div>
+        <div class="kanban-block" id="inprogress" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <strong>En progreso</strong>
+        </div>
+        <div class="kanban-block" id="done" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <strong>Hecho</strong>
+        </div>
+        <div class="create-new-task-block" id="create-new-task-block">
+            <strong>Nueva Tarea</strong>
+            <span class="form-row">
+                <label class="form-row-label" for="task-name" id="nombreTarea">Tarea</label>
+                <input class="form-row-input" type="text" name="task-name" id="task-name">
+            </span>
+            <span class="form-row">
+                <label class="form-row-label" for="task-name">Descripcion</label>
+                <textarea class="form-row-input" name="task-description" id="task-description" cols="70" rows="10"></textarea>
+            </span>
+            <span class="form-row">
+                <label class="form-row-label" for="task-name">Estado</label>
+                <select class="form-row-input" name="task-status" id="task-status">
+                    <option value="Hacer">Hacer</option>
+                </select>
+            </span>
+            <span class="form-row-buttons">
+                <button id="edit-button" onclick="editTask()">Edit</span>
+                <button id="save-button" onclick="saveTask()">Guardar</span>
+                <button id="cancel-button" onclick="createTask()">Cancelar</span>
+            </span>
+        </div>
+    </div>
+</div>
+</body>
+</html>

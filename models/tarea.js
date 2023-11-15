@@ -3,7 +3,7 @@ const sequelize = require('../utils/database');
 
 //User Model 
 
-const TareasUsuario = sequelize.define('tareas', {
+const Tarea = sequelize.define('tareas', {
     //columna 1 (id de la tarea)
     id_tarea: {
         type: Sequelize.INTEGER,
@@ -31,6 +31,8 @@ const TareasUsuario = sequelize.define('tareas', {
         allownull: false
     }
 
-})
+},{
+    timestamps: false,
+});
 
 module.exports = Tarea;
