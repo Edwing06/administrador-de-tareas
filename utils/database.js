@@ -2,9 +2,10 @@
 const { Sequelize } = require('sequelize');
 
 // Crea una instancia de Sequelize y se conecta a la base de datos
-const sequelize = new Sequelize('administrador_de_tareas', 'root', '', {
+const sequelize = new Sequelize('administrador_de_tareas', 'root', '1234', {
   host: 'localhost',
-  dialect: 'mysql'
+  dialect: 'mysql',
+  password: '1234'
 });
 
 // Verificar la conexión a la base de datos
