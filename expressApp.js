@@ -1,5 +1,6 @@
 const express = require('express'); // Importa la biblioteca Express
 const bodyParser = require('body-parser'); // Middleware para analizar solicitudes
+const cookieParser = require('cookie-parser') // Middleware para manejar las cookies
 const routesUsuarios = require('./routes/routesUsuario'); // Importa las rutas definidas para usuarios
 const routesTareas = require('./routes/routesTareas'); //Importa las rutas definidas para tareas
 
@@ -13,6 +14,7 @@ class ExpressApp {
   setupMiddleware() {
     this.app.use(bodyParser.json()); // Utiliza el middleware para analizar solicitudes JSON
     this.app.use(bodyParser.urlencoded({ extended: false })); // Utiliza el middleware para analizar solicitudes de formularios
+    this.app.use(cookieParser()); // Utiliza el middleware para el manejo de cookies
   }
 
   setupRoutes() {

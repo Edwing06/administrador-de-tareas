@@ -5,6 +5,40 @@ const errorHandler = require('../services/errors') // Importa el middleware erro
 const Tarea = require('../models/tarea');
 const Sequelize = require('sequelize');
 const sequelize = require('../utils/database');
+const jwt = require('jsonwebtoken');
+
+// Controlador para el login de usuarios
+exports.login = async (req, res, next) => {
+  const { correo, contrasena } = req.body;
+
+  try {
+    // Buscar al usuario por correo
+    const usuario = await Usuario.findOne({ where: { correo } });
+
+    if (!usuario) {
+      throw new CustomError('Credenciales inválidas', 401);
+    }
+
+    // Verificar la contraseña ingresada con la contraseña almacenada en la base de datos
+    const contrasenaValida = await bcrypt.compare(contrasena, usuario.contrasena);
+
+    if (!contrasenaValida) {
+      throw new CustomError('Credenciales inválidas', 401);
+    }
+
+    // Si las credenciales son válidas, crear un token JWT
+    const token = jwt.sign({ id: usuario.id }, 'secreto', { expiresIn: '1h' });
+
+    // Configuración de la cookie para almacenar el token
+    res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 3600000 }); // 'maxAge' es el tiempo de vida de la cookie en milisegundos (aquí configurado para una hora)
+
+    // Enviar el token como respuesta
+    res.status(200).json({ token });
+  } catch (error) {
+    console.error('Error en el inicio de sesión:', error);
+    next(error); // Pasar el error al middleware de manejo de errores
+  }
+};
 
 // Controlador para obtener todos los usuarios
 exports.listar = async (req, res, next) => {
@@ -23,7 +57,7 @@ exports.crear = async (req, res, next) => {
   const { nombre_usuario, correo, contrasena } = req.body
 
   try {
-    const nuevoUsuario = await Usuario.create({nombre_usuario, correo, contrasena});
+    const nuevoUsuario = await Usuario.create({ nombre_usuario, correo, contrasena });
 
     //Generamos el nombre de la tabla. Se usan esas comillas para que lo que se encuentra dentro de las llaves sea tomado como una variable y no como un texto.
     const nombreTablaDeTareas = `tareasUsuario_${nuevoUsuario.id}`;
@@ -51,11 +85,11 @@ exports.crear = async (req, res, next) => {
           type: Sequelize.BOOLEAN,
           allowNull: false,
         },
-      },{
-        timestamps: false,
-        sequelize, // Debes pasar la instancia de Sequelize
-        tableName: nombreTablaDeTareas, // Establece el nombre de la tabla dinámica
-      }
+      }, {
+      timestamps: false,
+      sequelize, // Debes pasar la instancia de Sequelize
+      tableName: nombreTablaDeTareas, // Establece el nombre de la tabla dinámica
+    }
     );
 
     // Sincroniza el modelo con la base de datos para crear la tabla
