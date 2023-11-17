@@ -33,7 +33,8 @@ exports.login = async (req, res, next) => {
     res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 3600000 }); // 'maxAge' es el tiempo de vida de la cookie en milisegundos (aquí configurado para una hora)
 
     // Enviar el token como respuesta
-    res.status(200).json({ token });
+    //res.status(200).json({ token });
+    res.status(200).redirect('/index');
   } catch (error) {
     console.error('Error en el inicio de sesión:', error);
     next(error); // Pasar el error al middleware de manejo de errores
