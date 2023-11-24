@@ -4,6 +4,7 @@
 	<title>Login</title>
   </head>
   <link rel="stylesheet" href="styles/login.css">
+  <script defer src="modal.js"></script>
   <body>
 	<div class="contenedor-titulo">
         <strong class="titulo">Administrador de tareas WEB</strong>
@@ -17,10 +18,28 @@
 			Contraseña:<br>
 			<input type="password" name="contrasena" placeholder="Contraseña" required><br><br>
 			<!-- submit button -->
-			<button type="submit">Iniciar Sesión</button>
+			<button type="submit"><strong>Iniciar Sesión</strong></button>
+			<button data-id="abrir"><strong>Registrarse</strong></button>
 		  </form>
       
 	</div>
 	
+
+	<dialog data-id="modal" class="modal-container">
+	
+		<form id="register-form" action="/registrar" method="post" >
+			<!-- user input-->
+			Nombre de usuario:<br>
+			<input type="text" name="nombre_usuario" placeholder="Nombre de usuario" required><br><br>
+			Correo:<br>
+			<input type="text" name="correo" placeholder="Correo" required><br><br>
+			Contraseña:<br>
+			<input type="password" name="contrasena" placeholder="Contraseña" required><br><br>
+			<!-- submit button -->
+			<button data-id="abrir" type="submit"><strong>Registrarse</strong></button>
+		  </form>
+		
+	</dialog>
+
   </body>
 </html>

@@ -96,7 +96,8 @@ exports.crear = async (req, res, next) => {
     // Sincroniza el modelo con la base de datos para crear la tabla
     await TareasUsuario.sync();
 
-    res.status(201).json(nuevoUsuario)
+    //res.status(201).json(nuevoUsuario)
+    res.status(201).redirect('/');
   } catch (error) {
     console.error('Error al crear usuario:', error)
     const customError = new CustomError('Error al crear usuario', 500)

@@ -20,6 +20,9 @@ router.get('/', (req, res) => {
 router.post('/autenticar', usuarioController.login);
 
 
+router.post('/registrar', usuarioController.crear);
+
+
 // Redirige la ruta raíz a la página de inicio de sesión
 router.get('/index', (req, res) => {
     const loginFilePath = path.join(__dirname, '../static/index.html');
@@ -36,6 +39,12 @@ router.get('/index', (req, res) => {
 // Obtiene los recursos de la ruta /index.js' para aplicar el script en la index.html
 router.get('/index.js', (req, res) => {
   const cssFilePath = path.join(__dirname, '../static/index.js');
+  res.sendFile(cssFilePath);
+});
+
+// Obtiene los recursos de la ruta /index.js' para aplicar el script en la index.html
+router.get('/modal.js', (req, res) => {
+  const cssFilePath = path.join(__dirname, '../static/modal.js');
   res.sendFile(cssFilePath);
 });
 

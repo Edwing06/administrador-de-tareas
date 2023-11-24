@@ -1,6 +1,6 @@
-	body {
+body {
     font-family: Arial, sans-serif;
-    background-color: rgba(254, 162, 245, 0.86);
+    background-color: #f2f2f2;
 }
 
 h2{
@@ -16,18 +16,18 @@ h2{
   }
 
   .titulo {
-    font-size: 1.8rem;
-    background-color: #fffa61d0;
+    font-size: 1.5rem;
+    background-color: #007BFF;
     padding: 0.8rem 1.7rem;
     border-radius: 0.5rem;
     margin: 1rem;
   }
-  
+
 .login-container {
-    width: 350px;
+    width: 300px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #ff718e;
+    background-color: #fff;
     border-radius: 5px;
     box-shadow: 0px 0px 10px 0px #888888;
     text-align: center;
@@ -37,20 +37,29 @@ input {
     width: 90%;
     margin: 15px 0;
     padding: 10px;
-    background-color: #fec448;;
 }
 
 button {
     width: 50%;
     padding: 10px;
     border-radius: 5px;
-    margin: 0px;
-    background-color: rgba(168, 110, 250, 0.84);
+    margin: 5px;
+    background-color: #007BFF;
     color: black;
     border: none;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: #fffa61d0;
+    background-color: #0056b3;
+}
+
+.modal-container{
+    width: 300px;
+    margin: 100px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 0px #888888;
+    text-align: center;
 }
