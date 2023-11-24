@@ -42,7 +42,7 @@ router.get('/index.js', (req, res) => {
   res.sendFile(cssFilePath);
 });
 
-// Obtiene los recursos de la ruta /index.js' para aplicar el script en la index.html
+// Obtiene los recursos de la ruta /modal.js' para aplicar el script en la login.html
 router.get('/modal.js', (req, res) => {
   const cssFilePath = path.join(__dirname, '../static/modal.js');
   res.sendFile(cssFilePath);

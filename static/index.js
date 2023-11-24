@@ -32,6 +32,7 @@ function saveTask(){
     var taskName = document.getElementById("task-name").value;
     var taskDescription = document.getElementById("task-description").value;
     var estado = document.getElementById("task-status").value;
+    const dueDate = document.getElementById('due-date').value;
     console.log(taskName);
     console.log(taskDescription);
     console.log(estado);
@@ -41,7 +42,10 @@ function saveTask(){
 
     todo.innerHTML += `
     <div class="task" id="${taskName.toLowerCase().split(" ").join("")}" draggable="true" ondragstart="drag(event)">
-        <span>${taskName}<br>${taskDescription}</span>
+    
+        <span><strong>${"Tarea: "}</strong>${taskName}<br><strong>${"Descripción: "}</strong>${taskDescription}<br><strong>${"Fecha: "}</strong>${dueDate}</span><br>
+        <input type="checkbox" onChange="completeTask(this)">
+        
     </div>
     `
     
@@ -58,3 +62,12 @@ function editTask(){
         editButton.style.display = "block";
     }
 }
+
+
+  function completeTask(checkbox) {
+
+    if(checkbox.checked) {
+      checkbox.parentElement.remove();
+    }
+  
+  }
