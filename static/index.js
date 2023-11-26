@@ -71,3 +71,33 @@ function editTask(){
     }
   
   }
+
+  // Suponiendo que tienes una función para realizar una solicitud AJAX
+function fetchTareas() {
+    return fetch('/tareas/tareas') // Ajusta la ruta según tu configuración
+      .then(response => response.json())
+      .catch(error => console.error('Error al obtener tareas:', error));
+  }
+  
+  function cargarTareas() {
+    var todo = document.getElementById("todo");
+  
+    // Limpiar el contenido actual
+    todo.innerHTML = '';
+  
+    // Realizar la solicitud para obtener las tareas
+    fetchTareas().then(tareas => {
+      // Iterar sobre las tareas y agregarlas al contenedor
+      tareas.forEach(tarea => {
+        todo.innerHTML += `
+          <div class="task" id="${tarea.id}" draggable="true" ondragstart="drag(event)">
+            <span><strong>Tarea: </strong>${tarea.taskName}<br><strong>Descripción: </strong>${tarea.taskDescription}<br><strong>Fecha: </strong>${tarea.dueDate}</span><br>
+            <input type="checkbox" onChange="completeTask(this)">
+          </div>
+        `;
+      });
+    });
+  }
+  
+  // Llamada a cargarTareas al cargar la página
+  document.addEventListener('DOMContentLoaded', cargarTareas);

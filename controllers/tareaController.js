@@ -1,6 +1,7 @@
 
 const CustomError = require('../services/customError'); // Importa la clase CustomError
 const Tarea = require('../models/tarea'); // Reemplaza la ruta por la ubicación real de tu modelo Tarea
+const jwt = require('jsonwebtoken');
 
 // Controlador para obtener todas las tareas
 exports.listar = async (req, res) => {
