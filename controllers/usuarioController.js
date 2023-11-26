@@ -68,6 +68,7 @@ exports.crear = async (req, res, next) => {
         id_tarea: {
           type: Sequelize.INTEGER,
           allowNull: false,
+          autoIncrement: true,
           primaryKey: true,
         },
         nombre: {

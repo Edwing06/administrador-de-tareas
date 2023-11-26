@@ -7,7 +7,8 @@ const Tarea = sequelize.define('tareas', {
     //columna 1 (id de la tarea)
     id_tarea: {
         type: Sequelize.INTEGER,
-        allownull: false, 
+        allownull: false,
+        autoIncrement: true, 
         primaryKey: true
     },
     //Columna 3 (nombre de la tarea)
@@ -22,7 +23,7 @@ const Tarea = sequelize.define('tareas', {
     },
     // Columna 5 (fecha de entrega de la tarea)
     fecha_entrega: {
-        type: Sequelize.TIME,
+        type: Sequelize.DATE,
         allownull: false
     },
     // Columna 6 (Estado de la tarea, entregada: false, true)

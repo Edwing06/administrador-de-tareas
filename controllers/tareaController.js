@@ -5,7 +5,21 @@ const Tarea = require('../models/tarea'); // Reemplaza la ruta por la ubicación
 // Controlador para obtener todas las tareas
 exports.listar = async (req, res) => {
   try {
-    const tareas = await Tarea.findAll();
+    const token = req.cookies.token; // Obtenemos el JWT token que almacenamos en las cookies
+    const decodedToken = jwt.verify(token, 'secreto'); // Decodificamos el token para obtener la información almacenada
+    const userId = decodedToken.id; // Obtenemos el id del usuario almacenado en las cookies ya decodificadas
+    
+    const nombreTabla = `tareasUsuario_${userId}`; // Construimos el nombre de la tabla dinámicamente
+
+    // Utilizamos el modelo Tarea existente para acceder a la tabla dinámica
+    const TareaDinamica = Tarea.sequelize.define(nombreTabla, {}, {
+      tableName: nombreTabla, // Establece el nombre de la tabla dinámica
+      timestamps: false, // Opcional: deshabilita los campos de timestamp si no son necesarios
+    });
+
+    // Utilizamos el modelo dinámico para buscar las tareas del usuario específico
+    const tareas = await TareaDinamica.findAll();
+    
     res.json(tareas);
   } catch (error) {
     console.error('Error al obtener las tareas:', error);
