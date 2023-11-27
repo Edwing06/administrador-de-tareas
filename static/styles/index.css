@@ -1,5 +1,6 @@
 body {
-  background-color: rgba(254, 162, 245, 0.86);
+  background-color: #ffeadb;
+}
 }
 
 ul {
@@ -37,7 +38,7 @@ div{
 
 .kanban-heading-text {
   font-size: 1.8rem;
-  background-color: #fffa61d0;
+  background-color:  #ff6f3aea;
   padding: 0.8rem 1.7rem;
   border-radius: 0.5rem;
   margin: 1rem;
@@ -55,18 +56,18 @@ div{
 }
 
 #todo {
-  background-color: #ff718e;
+  background-color:#679B9B;
 }
 
 #menu {
-  background-color: rgb(226, 251, 127);
+  background-color:  #679B9B;
 }
 #inprogress {
-  background-color: #fec448;
+  background-color: #679B9B;
 }
 
 #done {
-  background-color: rgba(168, 110, 250, 0.84);
+  background-color:#679B9B;
 }
 
 .task {
@@ -94,7 +95,7 @@ div{
 .create-new-task-block {
   display: none;
   /* display: flex; */
-  background: #ffaf00;
+  background: #679B9B;
   width: 64.4%;
   flex-direction: column;
 }
