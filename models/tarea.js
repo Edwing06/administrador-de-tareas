@@ -5,7 +5,7 @@ const sequelize = require('../utils/database');
 
 const Tarea = sequelize.define('tareas', {
     //columna 1 (id de la tarea)
-    id_tarea: {
+    id: {
         type: Sequelize.INTEGER,
         allownull: false,
         autoIncrement: true, 

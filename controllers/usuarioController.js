@@ -65,7 +65,7 @@ exports.crear = async (req, res, next) => {
 
     const TareasUsuario = Tarea.init(
       {
-        id_tarea: {
+        id: {
           type: Sequelize.INTEGER,
           allowNull: false,
           autoIncrement: true,
