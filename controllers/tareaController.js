@@ -2,6 +2,8 @@
 const CustomError = require('../services/customError'); // Importa la clase CustomError
 const Tarea = require('../models/tarea'); // Reemplaza la ruta por la ubicación real de tu modelo Tarea
 const jwt = require('jsonwebtoken');
+const Sequelize = require('sequelize');
+const sequelize = require('../utils/database');
 
 // Controlador para obtener todas las tareas
 exports.listar = async (req, res) => {
@@ -9,18 +11,44 @@ exports.listar = async (req, res) => {
     const token = req.cookies.token; // Obtenemos el JWT token que almacenamos en las cookies
     const decodedToken = jwt.verify(token, 'secreto'); // Decodificamos el token para obtener la información almacenada
     const userId = decodedToken.id; // Obtenemos el id del usuario almacenado en las cookies ya decodificadas
-    
+
     const nombreTabla = `tareasUsuario_${userId}`; // Construimos el nombre de la tabla dinámicamente
 
     // Utilizamos el modelo Tarea existente para acceder a la tabla dinámica
-    const TareaDinamica = Tarea.sequelize.define(nombreTabla, {}, {
+    const TareaDinamica = Tarea.sequelize.define(nombreTabla, {
+      id: {
+        type: Sequelize.INTEGER,
+        allownull: false,
+        autoIncrement: true,
+        primaryKey: true
+      },
+      //Columna 3 (nombre de la tarea)
+      nombre: {
+        type: Sequelize.STRING,
+        allownull: false
+      },
+      //Columna 4 (descripción de la tarea)
+      descripcion: {
+        type: Sequelize.STRING,
+        allownull: false,
+      },
+      // Columna 5 (fecha de entrega de la tarea)
+      fecha_entrega: {
+        type: Sequelize.DATE,
+        allownull: false
+      },
+      // Columna 6 (Estado de la tarea, entregada: false, true)
+      entregada: {
+        type: Sequelize.BOOLEAN,
+        allownull: false
+      }
+    }, {
       tableName: nombreTabla, // Establece el nombre de la tabla dinámica
       timestamps: false, // Opcional: deshabilita los campos de timestamp si no son necesarios
     });
 
-    // Utilizamos el modelo dinámico para buscar las tareas del usuario específico
     const tareas = await TareaDinamica.findAll();
-    
+
     res.json(tareas);
   } catch (error) {
     console.error('Error al obtener las tareas:', error);
