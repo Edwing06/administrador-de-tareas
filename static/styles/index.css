@@ -70,6 +70,7 @@ div{
 }
 
 .task {
+  position: relative;
   background-color: white;
   margin: 0.2rem 0rem 0.3rem 0rem;
   border: 0.1rem solid black;
@@ -146,8 +147,6 @@ textarea {
   display: none;
 }
 
-
-/* Agregar estilo para el menú de opciones */
 .task-options-menu {
   display: none;
   position: absolute;
@@ -155,6 +154,8 @@ textarea {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   min-width: 160px;
   z-index: 1;
+  right: 0;
+  top: 0;
 }
 
 .task-options-menu a {
@@ -166,4 +167,14 @@ textarea {
 
 .task-options-menu a:hover {
   background-color: #f1f1f1;
+}
+
+span {
+  cursor: pointer;
+}
+
+.options {
+  position: absolute;
+  top: 5px; 
+  right: 5px;
 }
