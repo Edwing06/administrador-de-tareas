@@ -16,12 +16,10 @@ function createTask() {
   var x = document.getElementById("inprogress");
   var y = document.getElementById("done");
   var z = document.getElementById("create-new-task-block");
-  if (x.style.display === "none") {
-    x.style.display = "block";
+  if (y.style.display === "none") {
     y.style.display = "block";
     z.style.display = "none";
   } else {
-    x.style.display = "none";
     y.style.display = "none";
     z.style.display = "flex";
   }

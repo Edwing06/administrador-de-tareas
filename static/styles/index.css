@@ -31,7 +31,7 @@ div{
 .kanban-board {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   font-family: sans-serif;
 }
 
@@ -84,10 +84,11 @@ div{
   background-color: white;
   border-radius: 0.2rem;
   width: 100%;
-  border: 0.25rem solid black;
+  border: 0.15rem solid black;
   padding: 0.5rem 2.7rem;
   border-radius: 0.3rem;
   font-size: 1rem;
+  
 }
 
 .create-new-task-block {
