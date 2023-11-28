@@ -44,7 +44,7 @@ div{
 }
 
 .kanban-block,
-.create-new-task-block {
+.create-new-task-block, .update-new-task-block {
   text-align: center;
   padding: 0.6rem;
   padding-bottom: 380px;
@@ -91,7 +91,7 @@ div{
   
 }
 
-.create-new-task-block {
+.create-new-task-block, .update-new-task-block {
   display: none;
   /* display: flex; */
   background: #679B9B;

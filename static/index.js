@@ -33,12 +33,28 @@ function saveTask() {
   const dueDate = document.getElementById('due-date').value;
   console.log(taskName);
   console.log(taskDescription);
-  console.log(estado);
+  console.log(dueDate);
 
+  // Crear un objeto con los datos a enviar al servidor
+  const taskData = {
+    nombre: taskName,
+    descripcion: taskDescription,
+    fecha_entrega: dueDate,
+    entregada: false,
+  };
 
-
-
-  todo.innerHTML += `
+  // Hacer una solicitud POST al servidor para crear la tarea
+  fetch('/tareas/tareas', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(taskData),
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Respuesta del servidor:', data);
+    todo.innerHTML += `
     <div class="task" id="${taskName.toLowerCase().split(" ").join("")}" draggable="true" ondragstart="drag(event)">
         <span><strong>${"Tarea: "}</strong>${taskName}<br><strong>${"Descripción: "}</strong>${taskDescription}<br><strong>${"Fecha: "}</strong>${dueDate}</span><br>
         <span class="options" onclick="showOptions(this)">°°°</span>
@@ -47,24 +63,51 @@ function saveTask() {
 </div>
         </div>
 `;
+  })
+  .catch(error => {
+    console.error('Error al enviar la tarea al servidor:', error);
+    // Manejar el error de alguna manera
+  });
+
+
+
+ 
 
 }
 
-function editTask() {
-  var saveButton = document.getElementById("save-button");
-  var editButton = document.getElementById("edit-button");
-  if (saveButton.style.display === "none") {
-    saveButton.style.display = "block";
-    editButton.style.display = "none";
+function editTask(tarea, id) {
+  var x = document.getElementById("inprogress");
+  var y = document.getElementById("done");
+  var z = document.getElementById("update-new-task-block");
+  
+  
+  if (y.style.display === "none") {
+    y.style.display = "block";
+    z.style.display = "none";
   } else {
-    saveButton.style.display = "none";
-    editButton.style.display = "block";
+    y.style.display = "none";
+    z.style.display = "flex";
   }
+
+  fetchTareasPorID(id).then(tarea => {
+
+    const id = tarea.id;
+    const nombre = tarea.nombre;
+    const descripcion = tarea.descripcion;
+    const fecha_vencimiento = tarea.fecha_entrega;
+    
+    console.log(id);
+    console.log(nombre);
+    console.log(descripcion);
+    console.log(fecha_vencimiento);
+  });
+
+  
 }
 
 
 function fetchTareas() {
-  return fetch('/tareas/tareas') // Ajusta la ruta según tu configuración
+  return fetch('/tareas/tareas') 
     .then(response => response.json())
     .catch(error => console.error('Error al obtener tareas:', error));
 }
@@ -80,19 +123,20 @@ function cargarTareas() {
     tareas.forEach(tarea => {
       if (tarea.entregada != 1) {
 
+        const id = tarea.id;
         const nombre = tarea.nombre;
         const descripcion = tarea.descripcion;
         const fecha_vencimiento = tarea.fecha_entrega;
         todo.innerHTML += `
           <div class="task" id="${tarea.id}" draggable="true" ondragstart="drag(event)">
           <span>
+          <strong>Id:</strong> ${id}<br>
             <strong>Tarea:</strong> ${nombre}<br>
             <strong>Descripción:</strong> ${descripcion}<br>
             <strong>Fecha:</strong> ${fecha_vencimiento}
           </span><br>
-          <span class="options" onclick="showOptions(this)">°°°</span>
-          <div class="options-menu"></div>
-    <div id="options"></div>
+          <button onclick="editTask(this, ${id})">Editar</button>
+        <button>Completar</button>
   </div>
           `;
       }
@@ -119,4 +163,15 @@ function showOptions(task) {
     options.innerHTML = "";
   }
 
+}
+
+function updateTask() {
+  
+}
+
+
+function fetchTareasPorID(id) {
+  return fetch(`/tareas/tareas/${id}`)
+    .then(response => response.json())
+    .catch(error => console.error('Error al obtener la informacion de la tarea:', error));
 }

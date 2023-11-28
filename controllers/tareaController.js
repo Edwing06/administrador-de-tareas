@@ -61,15 +61,31 @@ exports.obtenerPorId = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const tarea = await Tarea.findByPk(id);
+    const token = req.cookies.token;
+    const decodedToken = jwt.verify(token, 'secreto');
+    const userId = decodedToken.id;
+    
+    const nombreTabla = `tareasUsuario_${userId}`;
+    
+    const [tarea] = await sequelize.query(`SELECT * FROM ${nombreTabla} WHERE id = ?`, 
+      { 
+        replacements: [id],
+        type: sequelize.QueryTypes.SELECT
+      }
+    );
+    
     if (!tarea) {
       const customError = new CustomError('Tarea no encontrada', 404);
       return res.status(customError.statusCode).json({ error: customError.message });
     }
+   
     res.json(tarea);
+    
   } catch (error) {
     console.error('Error al obtener la tarea por ID:', error);
+    
     const customError = new CustomError('Error al obtener la tarea por ID', 500);
+            
     res.status(customError.statusCode).json({ error: customError.message });
   }
 };
