@@ -80,7 +80,7 @@ exports.crear = async (req, res, next) => {
           allowNull: false,
         },
         fecha_entrega: {
-          type: Sequelize.TIME,
+          type: Sequelize.DATEONLY,
           allowNull: false,
         },
         entregada: {
