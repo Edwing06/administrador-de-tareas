@@ -92,7 +92,9 @@ exports.obtenerPorId = async (req, res) => {
 
 // Controlador para actualizar una tarea por su ID
 exports.actualizarPorId = async (req, res) => {
-  const { nombre, descripcion, fecha_entrega, entregada, id } = req.body;
+  const { id } = req.params;
+
+  const { nombre, descripcion, fecha_entrega, entregada } = req.body;
 
   try {
     const token = req.cookies.token;
@@ -101,7 +103,7 @@ exports.actualizarPorId = async (req, res) => {
     
     const nombreTabla = `tareasUsuario_${userId}`;
 
-    // Consulta SQL directa para actualizar la tarea en la tabla dinámica
+    // Consulta SQL
     const resultado = await sequelize.query(
       `UPDATE ${nombreTabla} SET nombre = ?, descripcion = ?, fecha_entrega = ?, entregada = ? WHERE id = ?`,
       {
@@ -130,15 +132,29 @@ exports.eliminarPorId = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const tarea = await Tarea.findByPk(id);
-    if (!tarea) {
-      const customError = new CustomError('Tarea no encontrada', 404);
-      return res.status(customError.statusCode).json({ error: customError.message });
+    const token = req.cookies.token;
+    const decodedToken = jwt.verify(token, 'secreto');
+    const userId = decodedToken.id;
+
+    const nombreTabla = `tareasUsuario_${userId}`;
+
+    // Consulta SQL directa para eliminar la tarea de la tabla dinámica
+    const resultado = await sequelize.query(
+      `DELETE FROM ${nombreTabla} WHERE id = ?`,
+      {
+        replacements: [id],
+        type: sequelize.QueryTypes.DELETE
+      }
+    );
+
+    // Verificar si la tarea se eliminó correctamente
+    const filasEliminadas = resultado[1];
+
+    if (filasEliminadas > 0) {
+      res.status(200).json({ message: 'Tarea eliminada correctamente' });
+    } else {
+      res.status(404).json({ error: 'No se encontró la tarea para eliminar' });
     }
-
-    await tarea.destroy();
-
-    res.json({ mensaje: 'Tarea eliminada con éxito' });
   } catch (error) {
     console.error('Error al eliminar la tarea:', error);
     const customError = new CustomError('Error al eliminar la tarea', 500);
