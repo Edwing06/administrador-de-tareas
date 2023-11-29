@@ -57,9 +57,8 @@ function saveTask() {
     todo.innerHTML += `
     <div class="task" id="${taskName.toLowerCase().split(" ").join("")}" draggable="true" ondragstart="drag(event)">
         <span><strong>${"Tarea: "}</strong>${taskName}<br><strong>${"Descripción: "}</strong>${taskDescription}<br><strong>${"Fecha: "}</strong>${dueDate}</span><br>
-        <span class="options" onclick="showOptions(this)">°°°</span>
-        <div class="options-menu"></div>
-  <div id="options"></div>
+        <button onclick="formularioUpdateTask()">Editar</button>
+        <button onclick="tareaCompletada()">Completar</button>
 </div>
         </div>
 `;
@@ -68,14 +67,18 @@ function saveTask() {
     console.error('Error al enviar la tarea al servidor:', error);
     // Manejar el error de alguna manera
   });
-
-
-
- 
-
 }
 
-function editTask(tarea, id) {
+function fetchTareas() {
+  return fetch('/tareas/tareas') 
+    .then(response => response.json())
+    .catch(error => console.error('Error al obtener tareas:', error));
+}
+
+
+
+let tareaId;
+function formularioUpdateTask(id){
   var x = document.getElementById("inprogress");
   var y = document.getElementById("done");
   var z = document.getElementById("update-new-task-block");
@@ -89,6 +92,42 @@ function editTask(tarea, id) {
     z.style.display = "flex";
   }
 
+  tareaId = id;
+
+  fetchTareasPorID(id).then(tarea => {
+
+    const id = tarea.id;
+    const nombre = tarea.nombre;
+    const descripcion = tarea.descripcion;
+    const fecha = tarea.fecha_entrega;
+
+
+
+  document.getElementById("task-name-update").value = nombre;
+  document.getElementById("task-description-update").value = descripcion;
+  document.getElementById("due-date-update").value = fecha;
+
+  });
+}
+
+function cancelarAccion(){
+  var x = document.getElementById("inprogress");
+  var y = document.getElementById("done");
+  var z = document.getElementById("update-new-task-block");
+  
+  
+  if (y.style.display === "none") {
+    y.style.display = "block";
+    z.style.display = "none";
+  } else {
+    y.style.display = "none";
+    z.style.display = "flex";
+  }
+}
+
+function editTask() {
+
+  const id = tareaId;
   fetchTareasPorID(id).then(tarea => {
 
     const id = tarea.id;
@@ -96,22 +135,104 @@ function editTask(tarea, id) {
     const descripcion = tarea.descripcion;
     const fecha_vencimiento = tarea.fecha_entrega;
     
-    console.log(id);
-    console.log(nombre);
-    console.log(descripcion);
-    console.log(fecha_vencimiento);
+  const nuevoNombre = document.getElementById("task-name-update").value;
+  const nuevaDescripcion = document.getElementById("task-description-update").value;
+  const nuevaFechaVencimiento = document.getElementById("due-date-update").value;
+  const nuevoEstado = document.getElementById("task-status-update").value;
+
+
+
+const taskData = {
+      nombre: nuevoNombre,
+      descripcion: nuevaDescripcion,
+      fecha_entrega: nuevaFechaVencimiento,
+      entregada: false,
+    };
+
+    // Hacer una solicitud POST al servidor para actualizar la tarea
+  fetch(`/tareas/tareas/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(taskData),
+  })
   });
-
-  
+  limpiarBloque();
+  cargarTareas();
 }
 
 
-function fetchTareas() {
-  return fetch('/tareas/tareas') 
+
+
+function limpiarBloque(){
+  todo.innerHTML = "";
+}
+
+
+
+function fetchTareasPorID(id) {
+  return fetch(`/tareas/tareas/${id}`)
     .then(response => response.json())
-    .catch(error => console.error('Error al obtener tareas:', error));
+    .catch(error => console.error('Error al obtener la informacion de la tarea:', error));
 }
 
+
+
+
+function tareaCompletada(id) {
+  
+  fetchTareasPorID(id).then(tarea => {
+
+    const id = tarea.id;
+    const nombre = tarea.nombre;
+    const descripcion = tarea.descripcion;
+    const fecha_vencimiento = tarea.fecha_entrega;
+
+    
+  const nuevoNombre = nombre;
+  const nuevaDescripcion = descripcion;
+  const nuevaFechaVencimiento = fecha_vencimiento;
+
+
+
+const taskData = {
+      nombre: nuevoNombre,
+      descripcion: nuevaDescripcion,
+      fecha_entrega: nuevaFechaVencimiento,
+      entregada: true,
+    };
+
+    // Hacer una solicitud POST al servidor para actualizar la tarea
+  fetch(`/tareas/tareas/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(taskData),
+  })
+  });
+  limpiarBloque();
+  cargarTareas();
+}
+
+
+let optionsVisible = false;
+
+function showOptions(task) {
+
+  let options = task.parentNode.querySelector(".options-menu");
+
+  if (options.innerHTML === "") {
+    options.innerHTML = `
+        <button onclick="formularioUpdateTask()">Editar</button>
+        <button onclick="tareaCompletada()" >Completar</button>
+      `;
+  } else {
+    options.innerHTML = "";
+  }
+
+}
 function cargarTareas() {
   var todo = document.getElementById("todo");
 
@@ -135,8 +256,8 @@ function cargarTareas() {
             <strong>Descripción:</strong> ${descripcion}<br>
             <strong>Fecha:</strong> ${fecha_vencimiento}
           </span><br>
-          <button onclick="editTask(this, ${id})">Editar</button>
-        <button>Completar</button>
+          <button onclick="formularioUpdateTask(${id})">Editar</button>
+        <button onclick="tareaCompletada(${id})">Completar</button>
   </div>
           `;
       }
@@ -147,31 +268,3 @@ function cargarTareas() {
 
 // Llamada a cargarTareas al cargar la página
 document.addEventListener('DOMContentLoaded', cargarTareas);
-
-let optionsVisible = false;
-
-function showOptions(task) {
-
-  let options = task.parentNode.querySelector(".options-menu");
-
-  if (options.innerHTML === "") {
-    options.innerHTML = `
-        <button onclick="editTask(this)">Editar</button>
-        <button>Completar</button>
-      `;
-  } else {
-    options.innerHTML = "";
-  }
-
-}
-
-function updateTask() {
-  
-}
-
-
-function fetchTareasPorID(id) {
-  return fetch(`/tareas/tareas/${id}`)
-    .then(response => response.json())
-    .catch(error => console.error('Error al obtener la informacion de la tarea:', error));
-}
