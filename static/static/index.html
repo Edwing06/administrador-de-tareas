@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/index.css">
+    <script src="index.js" defer></script>
+    <title>Administrador de tareas WEB</title>
+</head>
+
+<body>
+    <!-- Encabezado -->
+    <div class="header">
+        <strong class="kanban-heading-text">Administrador de tareas WEB</strong>
+        <div class="navbar">
+            <a href="#" id="btnAgregarTarea">Agregar Tarea</a>
+            <a href="#" id="btnConsultarPorMes">Consultas por Mes</a>
+            <a href="#" id="btnCerrarSesion">Cerrar Sesión</a>
+        </div>
+    </div>
+
+    <!-- Contenedores Kanban -->
+    <div class="kanban-board">
+        <!-- Contenedor Pendientes -->
+        <div class="kanban-block" id="todo" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <strong>Pendientes</strong>
+        </div>
+
+        <!-- Contenedor Por Hacer (modificado para ocultarlo inicialmente) -->
+        <div class="kanban-block" id="done" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <strong>Completadas</strong>
+        </div>
+
+        <!-- Formulario para agregar tarea (inicialmente oculto) -->
+        <div class="kanban-block" id="addTaskForm" style="display: none;">
+            <form id="taskForm">
+                <label for="taskName">Nombre de la Tarea:</label><br>
+                <input type="text" id="taskName" name="taskName"><br>
+                <label for="taskDescription">Descripción:</label><br>
+                <textarea id="taskDescription" name="taskDescription"></textarea><br>
+                <label for="dueDate">Fecha de Entrega:</label><br>
+                <input type="date" id="dueDate" name="dueDate"><br><br>
+                <button type="button" id="btnAceptar">Aceptar</button>
+                <button type="button" id="btnCancelar">Cancelar</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
