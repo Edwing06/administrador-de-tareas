@@ -41,6 +41,20 @@ exports.login = async (req, res, next) => {
   }
 };
 
+// Controlador para el logout de usuarios
+exports.logout = async (req, res, next) => {
+  try {
+    // Limpiar la cookie que contiene el token
+    res.clearCookie('token');
+    res.redirect('/'); // Redirigir a la página de inicio de sesión u otra página deseada después del logout
+  } catch (error) {
+    console.error('Error en el logout:', error);
+    const customError = new CustomError('Error en el logout', 500);
+    next(customError); // Manejo del error con el middleware errorHandler
+  }
+};
+
+
 // Controlador para obtener todos los usuarios
 exports.listar = async (req, res, next) => {
   try {

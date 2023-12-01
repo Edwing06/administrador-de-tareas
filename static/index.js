@@ -1,18 +1,18 @@
 function drag(ev) {
     ev.dataTransfer.setData("text", ev.target.id);
-  }
-  
-  function allowDrop(ev) {
+}
+
+function allowDrop(ev) {
     ev.preventDefault();
-  }
-  
-  function drop(ev) {
+}
+
+function drop(ev) {
     ev.preventDefault();
     var data = ev.dataTransfer.getData("text");
     var draggedElement = document.getElementById(data);
 
     // Verificar si la tarea se está moviendo de un bloque a otro
-    if (ev.target.classList.contains('kanban-block') ) {
+    if (ev.target.classList.contains('kanban-block')) {
         var isDelivered = ev.target.id === 'done' ? 1 : 0;
 
         // Obtener el contenedor actual de la tarea
@@ -75,7 +75,7 @@ function mostrarFormulario() {
 function ocultarFormulario() {
     const kanbanDone = document.getElementById('done');
     const addTaskForm = document.getElementById('addTaskForm');
-    
+
     // Limpiar los campos del formulario
     document.getElementById('taskName').value = ''; // Campo Nombre de la tarea
     document.getElementById('taskDescription').value = ''; // Campo Descripción
@@ -129,15 +129,39 @@ function agregarTarea() {
 document.getElementById('btnAgregarTarea').addEventListener('click', mostrarFormulario);
 document.getElementById('btnCancelar').addEventListener('click', ocultarFormulario);
 document.getElementById('btnAceptar').addEventListener('click', agregarTarea);
+document.getElementById('btnCerrarSesion').addEventListener('click', logout);
 
 
 /**Funciones relacionadas con rutas y base de datos */
 
+function logout() {
+    fetch('/logout', {
+        method: 'POST', // o 'GET' según la configuración del servidor
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+        .then(response => {
+            // Realizar alguna acción después de cerrar sesión, como redireccionar a la página de inicio de sesión
+            if (response.ok) {
+                // Por ejemplo, redirigir al usuario a la página de inicio de sesión
+                window.location.href = '/';
+            } else {
+                console.error('Error al cerrar sesión');
+                // Manejar el error de alguna manera
+            }
+        })
+        .catch(error => {
+            console.error('Error al cerrar sesión:', error);
+            // Manejar el error de alguna manera
+        });
+}
+
 function fetchTareas() {
     return fetch('/tareas/tareas')
-      .then(response => response.json())
-      .catch(error => console.error('Error al obtener tareas:', error));
-  }
+        .then(response => response.json())
+        .catch(error => console.error('Error al obtener tareas:', error));
+}
 
 // Función para crear y devolver un elemento de tarea con su información
 function crearElementoTarea(tarea) {
@@ -154,7 +178,7 @@ function crearElementoTarea(tarea) {
     taskElement.dataset.tareaFechaEntrega = tarea.fecha_entrega;
 
     // Evento de arrastre
-    taskElement.addEventListener('dragstart', function(event) {
+    taskElement.addEventListener('dragstart', function (event) {
         event.dataTransfer.setData('text', tarea.id.toString()); // Establecer el ID de la tarea
     });
 

@@ -35,16 +35,20 @@ router.get('/index.js', (req, res) => {
 });
 
 // Obtiene los recursos de la ruta /modal.js' para aplicar el script en la login.html
-router.get('/modal.js', (req, res) => {
-  const cssFilePath = path.join(__dirname, '../static/modal.js');
+router.get('/script.js', (req, res) => {
+  const cssFilePath = path.join(__dirname, '../static/script.js');
   res.sendFile(cssFilePath);
 });
 
+
+
 router.post('/autenticar', usuarioController.login);
 router.post('/registrar', usuarioController.crear);
+router.post('/logout', usuarioController.logout);
 router.get('/usuarios', usuarioController.listar);
 router.get('/usuarios/:id', usuarioController.obtenerPorId);
 router.put('/usuarios/:id', usuarioController.actualizarPorId);
 router.delete('/usuarios/:id', usuarioController.eliminarPorId);
+
 
 module.exports = router;
