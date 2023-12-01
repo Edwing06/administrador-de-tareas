@@ -46,19 +46,16 @@ function drop(ev) {
                 .then(response => response.json())
                 .then(data => {
                     console.log('Estado actualizado en la base de datos:', data);
-                    // Actualizar la interfaz según sea necesario
                 })
                 .catch(error => {
                     console.error('Error al actualizar el estado en la base de datos:', error);
-                    // Manejar el error de alguna manera
+                    alert('Se produjo un error al actualizar el estado de la tarea. Por favor, inténtelo de nuevo más tarde.');
                 });
 
-            // Mover la tarea al contenedor destino
             ev.target.appendChild(draggedElement);
         }
     }
 }
-
 
 
 
@@ -77,9 +74,9 @@ function ocultarFormulario() {
     const addTaskForm = document.getElementById('addTaskForm');
 
     // Limpiar los campos del formulario
-    document.getElementById('taskName').value = ''; // Campo Nombre de la tarea
-    document.getElementById('taskDescription').value = ''; // Campo Descripción
-    document.getElementById('dueDate').value = ''; // Campo Fecha de Entrega
+    document.getElementById('taskName').value = '';
+    document.getElementById('taskDescription').value = '';
+    document.getElementById('dueDate').value = '';
 
     kanbanDone.style.display = 'block';
     addTaskForm.style.display = 'none';
@@ -101,7 +98,6 @@ function agregarTarea() {
             entregada: false,
         };
 
-        // Hacer una solicitud POST al servidor para crear la tarea
         fetch('/tareas/tareas', {
             method: 'POST',
             headers: {
@@ -109,16 +105,21 @@ function agregarTarea() {
             },
             body: JSON.stringify(taskData),
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al enviar la tarea al servidor');
+                }
+                return response.json();
+            })
             .then(data => {
                 console.log('Respuesta del servidor:', data);
-                alert('La tarea fue agregada con exito');
+                alert('La tarea fue agregada con éxito');
                 ocultarFormulario();
                 cargarTareasYDistribuir();
             })
             .catch(error => {
                 console.error('Error al enviar la tarea al servidor:', error);
-                // Manejar el error de alguna manera
+                alert('Hubo un error al agregar la tarea. Por favor, inténtalo de nuevo.');
             });
     } else {
         alert('Por favor completa todos los campos antes de agregar la tarea.');
@@ -134,33 +135,42 @@ document.getElementById('btnCerrarSesion').addEventListener('click', logout);
 
 /**Funciones relacionadas con rutas y base de datos */
 
+//Función para cerrar sesión
 function logout() {
     fetch('/logout', {
-        method: 'POST', // o 'GET' según la configuración del servidor
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
     })
         .then(response => {
-            // Realizar alguna acción después de cerrar sesión, como redireccionar a la página de inicio de sesión
             if (response.ok) {
-                // Por ejemplo, redirigir al usuario a la página de inicio de sesión
                 window.location.href = '/';
             } else {
                 console.error('Error al cerrar sesión');
-                // Manejar el error de alguna manera
+                throw new Error('Error al cerrar sesión');
             }
         })
         .catch(error => {
             console.error('Error al cerrar sesión:', error);
-            // Manejar el error de alguna manera
+            alert('Error al cerrar sesión. Inténtalo de nuevo más tarde.');
         });
 }
 
+//Función para obtener todas las tareas del usuario registradas en la base de datos
 function fetchTareas() {
     return fetch('/tareas/tareas')
-        .then(response => response.json())
-        .catch(error => console.error('Error al obtener tareas:', error));
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Error al obtener tareas');
+            }
+        })
+        .catch(error => {
+            console.error('Error al obtener tareas:', error);
+            alert('Error al obtener las tareas. Inténtalo de nuevo más tarde.');
+        });
 }
 
 // Función para crear y devolver un elemento de tarea con su información
@@ -179,10 +189,9 @@ function crearElementoTarea(tarea) {
 
     // Evento de arrastre
     taskElement.addEventListener('dragstart', function (event) {
-        event.dataTransfer.setData('text', tarea.id.toString()); // Establecer el ID de la tarea
+        event.dataTransfer.setData('text', tarea.id.toString()); // Establecer el ID de la tarea, sin esto las tareas no son funcionales para arrastre
     });
 
-    // Contenido visible del elemento de tarea
     const contenidoTarea = document.createElement('div');
     contenidoTarea.innerHTML = `
         <p>ID: ${tarea.id}</p>
@@ -235,9 +244,11 @@ function cargarTareasYDistribuir() {
         .then(tareas => {
             distribuirTareasEnBloques(tareas);
         })
-        .catch(error => console.error('Error al cargar las tareas:', error));
+        .catch(error => {
+            console.error('Error al cargar las tareas:', error);
+            alert('Error al cargar las tareas. Inténtalo de nuevo más tarde.');
+        });
 }
-
 
 // Llamada a la función para cargar tareas y distribuirlas al cargar la página
 window.addEventListener('load', cargarTareasYDistribuir);
